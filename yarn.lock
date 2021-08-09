@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@arwes/animation@^1.0.0-alpha.19":
+  version "1.0.0-alpha.19"
+  resolved "https://registry.yarnpkg.com/@arwes/animation/-/animation-1.0.0-alpha.19.tgz#cb5c915e13971eb9630b13b020b4a8a6ea6ab18a"
+  integrity sha512-Sstj816JbAhoH6cy1nLb8sQ5L4AbgdeXbFhjWNj8ZODAYA+dS/CjfY30CoAwIKIg04lAOiVOJkB20fXFcigqlQ==
+
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
