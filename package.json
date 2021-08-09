@@ -10,13 +10,23 @@
   },
   "dependencies": {
     "@arwes/animation": "^1.0.0-alpha.19",
+    "@arwes/core": "^1.0.0-alpha.19",
+    "@arwes/sounds": "^1.0.0-alpha.19",
     "@material-ui/core": "^4.12.3",
     "@plasmicapp/host": "^0.0.14",
     "@plasmicapp/loader": "^0.0.58",
+    "@plasmicapp/react-web": "^0.2.65",
     "@types/react": "^17.0.15",
+    "antd": "^4.16.11",
     "next": "11.0.1",
     "react": "17.0.2",
+    "react-awesome-reveal": "^3.8.1",
     "react-dom": "17.0.2",
+    "react-parallax-tilt": "^1.5.54",
+    "react-scroll-parallax": "^2.4.0",
+    "react-use": "^17.2.4",
+    "react-vis": "^1.11.7",
+    "react-wired-elements": "^0.1.6",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
