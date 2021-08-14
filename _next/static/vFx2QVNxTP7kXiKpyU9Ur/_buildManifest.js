@@ -1,0 +1,1 @@
+self.__BUILD_MANIFEST={__rewrites:{beforeFiles:[],afterFiles:[],fallback:[]},"/_error":["static/chunks/pages/_error-82a806cd39f8ab3dc3ac.js"],"/[...plasmicLoaderPage]":["static/chunks/pages/[...plasmicLoaderPage]-e1e9b2739e73995e9a30.js"],sortedPages:["/_app","/_error","/[...plasmicLoaderPage]"]},self.__BUILD_MANIFEST_CB&&self.__BUILD_MANIFEST_CB();
