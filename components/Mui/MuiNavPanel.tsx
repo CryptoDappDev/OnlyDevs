@@ -10,12 +10,12 @@ export function MuiNavPanel( {...props} ) {
   return (
     <div
       role="tabpanel"
-      hidden={(props.PageValue + 1) !== props.index}
+      hidden={(props.pagevalue + 1) !== props.index}
       id={`simple-tabpanel-${props.index}`}
       aria-labelledby={`simple-tab-${props.index}`}
       {...props}
     >
-      {(props.PageValue + 1) === props.index && (
+      {(props.pagevalue + 1) === props.index && (
         <Box p={3}>
           <Typography>{props.children}</Typography>
         </Box>

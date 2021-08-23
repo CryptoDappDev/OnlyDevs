@@ -9,12 +9,12 @@ export function MuiSubNav( {...props} ) {
   const inEditor = useContext(PlasmicCanvasContext);
 
   const handleChange = (event: React.ChangeEvent<{}>, value: any) => {
-    props.setPageValue(value);
+    props.setpagevalue(value);
   };
 
   return (
         <AppBar {...props} position="static" {...(inEditor ? { disabled: true } : {})}>
-          <Tabs value={props.PageValue} onChange={handleChange} aria-label="sub page navigation tabs">
+          <Tabs value={props.pagevalue} onChange={handleChange} aria-label="sub page navigation tabs">
             {props.children}
           </Tabs>
         </AppBar>
