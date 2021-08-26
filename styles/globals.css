@@ -106,8 +106,11 @@ html,
 body {
   padding: 0;
   margin: 0;
+  font-family: "Objectivity-Medium", Objectivity;
+  
+
 }
 
 .plasmic_code_component_examples_root_reset__2FjkK {
-  font-family: Objectivity, "Objectivity" !important;
+  font-family: "Objectivity", Objectivity;
 }
