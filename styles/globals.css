@@ -1,5 +1,8 @@
 @font-face {
   font-family: "Objectivity";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: optional;
   src: url("/fonts/Objectivity-Black.ttf");
   src: url("/fonts/Objectivity-BlackSlanted.ttf");
   src: url("/fonts/Objectivity-Bold.ttf");
