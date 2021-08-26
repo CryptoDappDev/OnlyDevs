@@ -1,103 +1,103 @@
 @font-face {
   font-family: "Objectivity-Black";
-  src: url("/fonts/EBGaramond/Objectivity-Black.ttf");
+  src: url("/fonts/Objectivity-Black.ttf");
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Objectivity-BlackSlanted";
-  src: url("/fonts/EBGaramond/Objectivity-BlackSlanted.ttf");
+  src: url("/fonts/Objectivity-BlackSlanted.ttf");
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Objectivity-Bold";
-  src: url("/fonts/EBGaramond/Objectivity-Bold.ttf");
+  src: url("/fonts/Objectivity-Bold.ttf");
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Objectivity-BoldSlanted";
-  src: url("/fonts/EBGaramond/Objectivity-BlackSlanted.ttf");
+  src: url("/fonts/Objectivity-BlackSlanted.ttf");
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Objectivity-ExtraBold";
-  src: url("/fonts/EBGaramond/Objectivity-ExtraBold.ttf");
+  src: url("/fonts/Objectivity-ExtraBold.ttf");
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Objectivity-ExtraBoldSlanted";
-  src: url("/fonts/EBGaramond/Objectivity-ExtraBoldSlanted.ttf");
+  src: url("/fonts/Objectivity-ExtraBoldSlanted.ttf");
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Objectivity-Light";
-  src: url("/fonts/EBGaramond/Objectivity-Light.ttf");
+  src: url("/fonts/Objectivity-Light.ttf");
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Objectivity-LightSlanted";
-  src: url("/fonts/EBGaramond/Objectivity-LightSlanted.ttf");
+  src: url("/fonts/Objectivity-LightSlanted.ttf");
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Objectivity-Medium";
-  src: url("/fonts/EBGaramond/Objectivity-Medium.ttf");
+  src: url("/fonts/Objectivity-Medium.ttf");
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Objectivity-MediumSlanted";
-  src: url("/fonts/EBGaramond/Objectivity-MediumSlanted.ttf");
+  src: url("/fonts/Objectivity-MediumSlanted.ttf");
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Objectivity-Regular";
-  src: url("/fonts/EBGaramond/Objectivity-Regular.ttf");
+  src: url("/fonts/Objectivity-Regular.ttf");
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Objectivity-RegularSlanted";
-  src: url("/fonts/EBGaramond/Objectivity-RegularSlanted.ttf");
+  src: url("/fonts/Objectivity-RegularSlanted.ttf");
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Objectivity-Super";
-  src: url("/fonts/EBGaramond/Objectivity-Super.ttf");
+  src: url("/fonts/Objectivity-Super.ttf");
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Objectivity-SuperSlanted";
-  src: url("/fonts/EBGaramond/Objectivity-SuperSlanted.ttf");
+  src: url("/fonts/Objectivity-SuperSlanted.ttf");
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Objectivity-Thin";
-  src: url("/fonts/EBGaramond/Objectivity-Thin.ttf");
+  src: url("/fonts/Objectivity-Thin.ttf");
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Objectivity-ThinSlanted";
-  src: url("/fonts/EBGaramond/Objectivity-ThinSlanted.ttf");
+  src: url("/fonts/Objectivity-ThinSlanted.ttf");
   font-style: normal;
   font-display: swap;
 }
@@ -109,5 +109,5 @@ body {
 }
 
 .plasmic_code_component_examples_root_reset__2FjkK {
-  font-family: Inter, "Objectivity-Bold" !important;
+  font-family: Objectivity, "Objectivity" !important;
 }
