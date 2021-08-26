@@ -106,24 +106,9 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Objectivity-Medium", Objectivity;
-  font-family: "Objectivity-Black", Objectivity;
-  font-family: "Objectivity-BlackSlanted", Objectivity;
-  font-family: "Objectivity-Bold", Objectivity;
-  font-family: "Objectivity-BoldSlanted", Objectivity;
-  font-family: "Objectivity-ExtraBold", Objectivity;
-  font-family: "Objectivity-ExtraBoldSlanted", Objectivity;
-  font-family: "Objectivity-Light", Objectivity;
-  font-family: "Objectivity-MediumSlanted, Objectivity";
-  font-family: "Objectivity-Regular, Objectivity";
-  font-family: "Objectivity-RegularSlanted, Objectivity";
-  font-family: "Objectivity-Super, Objectivity";
-  font-family: "Objectivity-SuperSlanted, Objectivity";
-  font-family: "Objectivity-Thin, Objectivity";
-  font-family: "Objectivity-ThinSlanted, Objectivity";
+
 }
 
-
-
-  
-  
+.plasmic_code_component_examples_root_reset__2FjkK {
+  font-family: "Objectivity-Medium", "Objectivity";
+}
