@@ -1,32 +1,7 @@
-@font-face {
-  font-family: "Objectivity";
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: optional;
-  src: url("/fonts/Objectivity-Black.ttf");
-  src: url("/fonts/Objectivity-BlackSlanted.ttf");
-  src: url("/fonts/Objectivity-Bold.ttf");
-  src: url("/fonts/Objectivity-BlackSlanted.ttf");
-  src: url("/fonts/Objectivity-ExtraBold.ttf");
-  src: url("/fonts/Objectivity-ExtraBoldSlanted.ttf");
-  src: url("/fonts/Objectivity-Light.ttf");
-  src: url("/fonts/Objectivity-LightSlanted.ttf");
-  src: url("/fonts/Objectivity-Medium.ttf");
-  src: url("/fonts/Objectivity-MediumSlanted.ttf");
-  src: url("/fonts/Objectivity-Regular.ttf");
-  src: url("/fonts/Objectivity-RegularSlanted.ttf");
-  src: url("/fonts/Objectivity-Super.ttf");
-  src: url("/fonts/Objectivity-SuperSlanted.ttf");
-  src: url("/fonts/Objectivity-Thin.ttf");
-  src: url("/fonts/Objectivity-ThinSlanted.ttf");
-}
-
 html,
 body {
-  font-family: Objectivity;
   padding: 0;
   margin: 0;
-
 }
 
 
