@@ -7,14 +7,11 @@ import Head from "next/head";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div>
-
         <ParallaxProvider>
           <PlasmicRootProvider>
             <Component {...pageProps} />
           </PlasmicRootProvider>
         </ParallaxProvider>
-    </div>
   )
      
 }
