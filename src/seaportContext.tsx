@@ -2,6 +2,7 @@ import React, { useReducer } from 'react'
 
 import * as Web3 from 'web3'
 import { OpenSeaPort, Network } from 'opensea-js';
+import detectEthereumProvider from '@metamask/detect-provider'
 
 type Action = {type: 'networkChange'}
 type Dispatch = (action: Action) => void
@@ -32,11 +33,20 @@ function Reducer(state: State, action: Action) {
   }
 }
 
+async function getProvider () {
+  const provider = await detectEthereumProvider();
+  if (provider) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function SeaportProvider({children}: CountProviderProps) {
 
   //Web3 Provider
   let web3Provider;
-  if (typeof window !== "undefined") {
+  if (getProvider()) {
     web3Provider = window.web3.currentProvider;
   } else {
     web3Provider =
