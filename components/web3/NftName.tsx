@@ -31,7 +31,7 @@ export function NftName ({...props}) {
 		//console.log("🚀 ~ file: NftAsset.tsx ~ line 34 ~ useEffect ~ NFT", NFT.asset)
 		//Check if Parameters are set up then call API
 		if ((isNaN(props.tokenId))){
-			console.log("🚀 ~ Not a Number")
+			//console.log("🚀 ~ Not a Number")
 		} else {
 			setTimeout(() => {getNFT()},500);
 		}

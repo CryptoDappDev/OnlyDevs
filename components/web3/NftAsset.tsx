@@ -28,7 +28,11 @@ export function NftAsset ({...props}) {
 	
 	useEffect (() => {
 		//console.log("🚀 ~ file: NftAsset.tsx ~ line 34 ~ useEffect ~ NFT", NFT)
-		setTimeout(() => {getNFT()},500);
+		if ((isNaN(props.tokenId))){
+			//console.log("🚀 ~ Not a Number")
+		} else {
+			setTimeout(() => {getNFT()},500);
+		}
 	},[props.tokenId])
         
             
