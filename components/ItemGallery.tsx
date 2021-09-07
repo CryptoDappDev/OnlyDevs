@@ -9,20 +9,15 @@ import {
 } from "react";
 
 import sty from "./ItemGallery.module.css";
-import { classNames } from "@plasmicapp/react-web";
-import { exampleCmsData, exampleProductData } from "./ItemGalleryExampleData";
+import classNames from "classnames";
+import {
+  exampleCmsData,
+  exampleCollectionData,
+  exampleProductData,
+} from "./ItemGalleryExampleData";
+import { repeatedElement } from "@plasmicapp/loader-nextjs";
 
-const productQuery = `
-query Products($first: Int!, $query: String, $sortKey: ProductSortKeys, $reverse: Boolean) {
-  products(first: $first, query: $query, sortKey: $sortKey, reverse: $reverse) {
-    edges {
-      node {
-        ...ProductFragment
-      }
-    }
-  }
-}
-
+const productFragment = `
 fragment ProductFragment on Product {
   availableForSale
   collections(first: 5) {
@@ -106,24 +101,58 @@ fragment ProductFragment on Product {
     }
   }
 }
-    `;
+`;
+
+const allProductsQuery = `
+query Products($first: Int!, $query: String, $sortKey: ProductSortKeys, $reverse: Boolean) {
+  products(first: $first, query: $query, sortKey: $sortKey, reverse: $reverse) {
+    edges {
+      node {
+        ...ProductFragment
+      }
+    }
+  }
+}
+${productFragment}
+`;
+
+const collectionQuery = `
+query Collection($handle:String!){
+  collectionByHandle(handle:$handle){
+    products(first:99){
+      edges{
+        node{
+          ...ProductFragment
+        }
+      }
+    }
+  }
+}
+${productFragment}
+`;
 
 interface ItemGalleryProps {
   scroller?: boolean;
   children?: ReactNode;
   style?: CSSProperties;
   className?: string;
+  columns?: number;
+  columnGap?: number;
+  rowGap?: number;
 }
 
 export function ItemGallery({
   scroller = false,
   children,
   className,
+  columns = 1,
+  columnGap = 0,
+  rowGap = 0,
 }: ItemGalleryProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [left, setLeft] = useState(0);
   useEffect(() => {
-    scrollerRef.current!.scrollTo({
+    scrollerRef.current?.scrollTo({
       left,
       behavior: "smooth",
     });
@@ -134,7 +163,7 @@ export function ItemGallery({
     setLeft(left + n * (cardWidth + gap));
   }
 
-  return (
+  return scroller ? (
     <div className={`${sty.Gallery} ${className}`}>
       {scroller && (
         <button className={sty.ScrollBtn} onClick={() => slide(-1)}>
@@ -155,6 +184,18 @@ export function ItemGallery({
           ›
         </button>
       )}
+    </div>
+  ) : (
+    <div
+      className={className}
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+        columnGap: `${columnGap}px`,
+        rowGap: `${rowGap}px`,
+      }}
+    >
+      {children}
     </div>
   );
 }
@@ -194,7 +235,7 @@ export function ProductGallery({
           referrer: "https://shopify.dev/",
           referrerPolicy: "strict-origin-when-cross-origin",
           body: JSON.stringify({
-            query: productQuery,
+            query: allProductsQuery,
 
             variables: { first: 10 },
           }),
@@ -240,25 +281,24 @@ export function ProductGallery({
 export type ProductData = typeof exampleProductData.data.products.edges[number]["node"];
 
 const ProductBoxContext = createContext<ProductData | undefined>(undefined);
-
-interface ProductCollectionProps {
+interface ProductCollectionProps extends ItemGalleryProps {
   count?: number;
-  category?: string;
-  scroller?: boolean;
-  className?: string;
-  children?: ReactNode;
+  collectionHandle?: string;
 }
 export function ProductCollection({
-  category,
+  collectionHandle,
   count,
   children,
-  className,
+  ...rest
 }: ProductCollectionProps) {
-  const [data, setData] = useState<typeof exampleProductData | undefined>(
+  const [data, setData] = useState<typeof exampleCollectionData | undefined>(
     undefined
   );
   useEffect(() => {
     (async () => {
+      if (!collectionHandle) {
+        return;
+      }
       const response = await fetch(
         "https://graphql.myshopify.com/api/2021-04/graphql.json",
         {
@@ -278,9 +318,8 @@ export function ProductCollection({
           referrer: "https://shopify.dev/",
           referrerPolicy: "strict-origin-when-cross-origin",
           body: JSON.stringify({
-            query: productQuery,
-
-            variables: { first: 10 },
+            query: collectionQuery,
+            variables: { handle: collectionHandle },
           }),
           method: "POST",
           mode: "cors",
@@ -290,23 +329,20 @@ export function ProductCollection({
       const data = await response.json();
       setData(data);
     })();
-  }, []);
+  }, [collectionHandle]);
 
-  return (
-    <div className={className}>
-      {data?.data.products.edges.slice(0, count).map((productEdge) => {
-        const product = productEdge.node;
-        if (category && category !== product.productType) {
-          return null;
-        }
-        return (
-          <ProductBoxContext.Provider value={product} key={product.id}>
-            <div className={sty.Item}>{children}</div>
-          </ProductBoxContext.Provider>
-        );
-      })}
-    </div>
-  );
+  const products = data?.data.collectionByHandle.products.edges
+    .slice(0, count)
+    .map((productEdge, i) => {
+      const product = productEdge.node;
+      return (
+        <ProductBoxContext.Provider value={product} key={product.id}>
+          <div>{repeatedElement(i === 0, children)}</div>
+        </ProductBoxContext.Provider>
+      );
+    });
+
+  return <ItemGallery {...rest}>{products}</ItemGallery>;
 }
 
 function useProduct() {
@@ -325,6 +361,9 @@ export function ProductImage({ className }: { className?: string }) {
       height={image.height}
       loading={"lazy"}
       className={className}
+      style={{
+        objectFit: "cover",
+      }}
     />
   );
 }
@@ -345,13 +384,50 @@ export function ProductPrice({ className }: { className?: string }) {
   );
 }
 
-interface CmsGalleryProps {
-  count?: number;
-  scroller?: boolean;
+export type CmsItem = {
+  photo: string;
+  title: string;
+  imageCaption?: string;
+  imageCredits?: string;
+};
+
+const CmsItemContext = createContext<CmsItem | undefined>(undefined);
+
+export function CmsItemField({
+  className,
+  field,
+}: {
   className?: string;
+  field?: keyof CmsItem;
+}) {
+  const item = useContext(CmsItemContext);
+  if (!item) {
+    return <div className={className}>(Must display in a CMS item)</div>;
+  }
+  if (!field) {
+    return <div className={className}>(Must specify a field)</div>;
+  }
+  if (field === "photo") {
+    return (
+      <img
+        src={item.photo}
+        loading={"lazy"}
+        className={className}
+        style={{
+          objectFit: "cover",
+        }}
+      />
+    );
+  } else {
+    return <div className={className}>{item[field]}</div>;
+  }
 }
 
-export function CmsGallery({ count, ...rest }: CmsGalleryProps) {
+interface CmsGalleryProps extends ItemGalleryProps {
+  count?: number;
+}
+
+export function CmsGallery({ count, children, ...rest }: CmsGalleryProps) {
   const [data, setData] = useState<typeof exampleCmsData | undefined>(
     undefined
   );
@@ -374,7 +450,8 @@ export function CmsGallery({ count, ...rest }: CmsGalleryProps) {
   }, []);
   return (
     <ItemGallery {...rest}>
-      {data?.items[1].fields.images.slice(0, count).map((item) => {
+      {data?.items[1].fields.images.slice(0, count).map((item, i) => {
+        // We do some dereferencing because Contentful data is shipped normalized.
         const entry = data.includes.Entry.find(
           (i) => i.sys.id === item.sys.id
         )! as typeof data.includes.Entry[0];
@@ -382,19 +459,17 @@ export function CmsGallery({ count, ...rest }: CmsGalleryProps) {
         const asset = data.includes.Asset.find(
           (i) => i.sys.id === photo.sys.id
         )!;
+        const imgSrc = (asset.fields as any).file.url + "?w=300";
         return (
-          <div
+          <CmsItemContext.Provider
             key={item.sys.id}
-            className={sty.Item}
-            style={{ height: "180px" }}
+            value={{
+              ...entry.fields,
+              photo: imgSrc,
+            }}
           >
-            <img
-              src={(asset.fields as any).file.url + "?w=300"}
-              loading={"lazy"}
-              className={sty.Thumb}
-            />
-            <div className={sty.Caption}>{entry.fields.title}</div>
-          </div>
+            {repeatedElement(i === 0, children)}
+          </CmsItemContext.Provider>
         );
       })}
     </ItemGallery>

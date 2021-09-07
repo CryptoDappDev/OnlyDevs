@@ -33,7 +33,8 @@ export function NftName ({...props}) {
 		if ((isNaN(props.tokenId))){
 			//console.log("🚀 ~ Not a Number")
 		} else {
-			setTimeout(() => {getNFT()},500);
+			//Check if Info 
+			setTimeout(() => {getNFT()},250);
 		}
 	},[props.tokenId])
 

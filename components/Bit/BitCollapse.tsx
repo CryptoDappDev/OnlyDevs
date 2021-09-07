@@ -9,23 +9,31 @@ export function BitCollapse ({...props}) {
 
 	const [open, setOpen] = useState(false);
 
+	const childrenWithExtraProp = React.Children.map(props.children, child =>
+	  React.cloneElement(child, { setOpen: setOpen, open: open , ...child.props})
+	);
+
 	return (
 		<div className={props.className}>
-
-			<div onClick={(e) => setOpen(!(open))} >
-				{props.button}
-			</div>
-			{props.show === true && 
-
+			{ props.show === true && 
 				<Collapsible direction={props.direction} open={true}>
-					{props.children}
-        		</Collapsible>
-			}
-			{props.show === false && 
-
-				<Collapsible direction={props.direction} open={open}>
-					{props.children}
+					{childrenWithExtraProp}
 				</Collapsible>
+			}
+			{ props.show === false && 
+				<>
+					{ open === false &&
+						<div onClick={(e) => setOpen(!(open))} >
+							{props.button}
+						</div>
+					}
+					
+					{ open === true &&
+						<Collapsible direction={props.direction} open={open}>
+							{childrenWithExtraProp}
+						</Collapsible>
+					}
+				</>
 			}
 		</div>
 	);

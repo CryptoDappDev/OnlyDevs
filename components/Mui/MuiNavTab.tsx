@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { PlasmicCanvasContext } from "@plasmicapp/host";
+import { PlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
 import Tab from '@material-ui/core/Tab';
 
 export function MuiNavTab( {...props} ) {

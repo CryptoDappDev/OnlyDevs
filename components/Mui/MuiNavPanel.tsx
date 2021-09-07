@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { PlasmicCanvasContext } from "@plasmicapp/host";
+import { PlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 

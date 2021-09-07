@@ -1,6 +1,6 @@
 //Imports
 import { Children, ComponentProps, useContext, useEffect, useState } from "react";
-import { PlasmicCanvasContext } from "@plasmicapp/host";
+import { PlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
 import {
   ThemeProvider,
   ThemeOptions,

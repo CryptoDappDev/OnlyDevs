@@ -1,5 +1,5 @@
 import React, { useContext} from 'react';
-import { PlasmicCanvasContext } from "@plasmicapp/host";
+import { PlasmicCanvasContext } from "@plasmicapp/loader-nextjs";
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
