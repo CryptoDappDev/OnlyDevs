@@ -48,9 +48,9 @@ import { NftName } from "./components/web3/NftName"
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
-      id: "aPZu6epBt5EaEYRgMF1d6z",
+      id: "tmuAPCL8N7XuwKcavmJW8E",
       token:
-        "TwiTi9V7cZzJn5j4jSpwZizlBPrDiQQh0T3hybnGtbPaHCsxBnv26Tp53atqTywSvXuXxpYpDa5Y2fqA",
+        "JCaoR0m0OZnRimzhPSmtgPoyGYlvg34Ga6RbwOzC74KvWKdmNHdlsDRS5kbOAAIYzAaZi0sg8f1cf4wf0KhxA",
     },
   ],
   preview: true,
