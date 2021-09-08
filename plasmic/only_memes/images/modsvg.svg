@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 21 23" xml:space="preserve">
-  <linearGradient id="sJFPle-HUa" gradientUnits="userSpaceOnUse" x1="-5.721" y1="-4.336" x2="31.724" y2="32.22">
-    <stop offset=".002" stop-color="#d1dd27"/>
-    <stop offset="1" stop-color="#3cb54a"/>
-  </linearGradient>
-  <path d="M8.5.5c1.3-.7 2.8-.7 4 0L19 4.3c1.3.7 2 2.1 2 3.5v7.5c0 1.4-.8 2.8-2 3.5l-6.5 3.7c-1.3.7-2.8.7-4 0L2 18.7c-1.3-.7-2-2.1-2-3.5V7.8C0 6.3.8 5 2 4.3L8.5.5z" fill="url(#sJFPle-HUa)"/>
-  <path d="M13.9 8.2c.3-.3.7-.3.9 0 .2.3.2.6.1.9l-.1.1-5.1 5.6c-.2.3-.6.3-.8.1l-.1-.1L6.2 12c-.3-.3-.3-.7 0-1 .2-.3.6-.3.8-.1l.1.1 2.1 2.3 4.7-5.1z" fill="#fcfcfd"/>
-</svg>
