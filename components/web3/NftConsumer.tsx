@@ -1,14 +1,33 @@
 import React, { useEffect } from 'react';
 import { NFTConsumer } from './NftContext';
 
+import detectEthereumProvider from '@metamask/detect-provider';
+
 
 export function NftConsumer ({...props}) {
 
 	const {Nft} = NFTConsumer();
 	
-	useEffect (() => {
 
-		//console.log("🚀 ~ file: NftConsumer.tsx ~ line 18 ~ useEffect ~ props", props)
+  async function getProvider () {
+    try { 
+      const provider = await detectEthereumProvider();
+      if (provider === true) {
+        console.log("🚀 ~ window.ethereum is available... Using Injected Web3 Provider");
+      //setProviderAvailable(true);
+      } else
+      {
+        console.log("🚀 ~ Oops, `window.ethereum` is not defined... Using External Web3 Provider");
+      }
+    } catch (err) {
+        console.log("🚀 ~ Oops, Error in Web3 Provider... Using External Web3 Provider");
+      //setProviderAvailable(false);
+    }
+  }
+
+	useEffect (() => {
+    getProvider();
+		console.log("🚀 ~ file: NftConsumer.tsx ~ line 18 ~ useEffect ~ props", props)
     //console.log("🚀 ~ file: NftConsumer.tsx ~ line 18 ~ useEffect ~ NFT", Nft)
 
 	},[props, Nft])
