@@ -49,7 +49,6 @@ import { NftName } from "./components/web3/NftName"
 
 // <-- ONLYMEMES.DEV PROJECT ID + API TOKEN -->
 
-/*
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -60,10 +59,9 @@ export const PLASMIC = initPlasmicLoader({
   ],
   preview: true,
 });
-*/
 
 // <-- TEST BENCH PROJECT ID + API TOKEN -->
-
+/*
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -74,6 +72,7 @@ export const PLASMIC = initPlasmicLoader({
   ],
   preview: true,
 });
+*/
 
 //OpenSea SDK + Web3 Lib Section
 
