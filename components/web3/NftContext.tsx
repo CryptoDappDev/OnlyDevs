@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { useSeaport } from "../../src/seaportContext";
+import { useSeaport } from "./seaportContext";
 import { OpenSeaAsset } from 'opensea-js/lib/types';
 
 type Nft = {Nft: OpenSeaAsset} | {Nft: null} 
@@ -18,6 +18,21 @@ export function NftContext({...props}) {
 
 	async function getNFT () {
 
+    /*
+    console.log("🚀 ~ NFT TEST QUERY");
+
+    const sdk = require('api')('@opensea/v1.0#gbq4cz1cksxopxqw');
+
+    sdk['retrieving-a-single-asset']({
+      asset_contract_address: '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb',
+      token_id: '1'
+      })
+    .then((res: any) => console.log("🚀 ~ " + res))
+    .catch((err: any) => console.error("🚀 ~ " + err));
+
+    console.log("🚀 ~ NFT TEST QUERY");
+    */
+
     //Check if the asset requested is already in the state
     if (Nft.Nft?.tokenId === props.tokenId) {
       //console.log("🚀 ~ NFT QUERY ALREADY CALLED")
@@ -29,6 +44,7 @@ export function NftContext({...props}) {
           tokenAddress: "0x495f947276749Ce646f68AC8c248420045cb7b5e",
           tokenId: props.tokenId
         })
+
         setNFT({Nft: asset});
       } else {
         let asset = await opensea.seaport.api.getAsset({
@@ -56,7 +72,7 @@ export function NftContext({...props}) {
 
     //console.log("🚀 ~ file: NftContext.tsx ~ line 30 ~ After Call NFT", Nft);
 
-	},[props.tokenId, Nft])
+	},[props.tokenId])
   
 
   return (

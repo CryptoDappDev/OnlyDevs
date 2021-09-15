@@ -2,7 +2,6 @@ import React, { useReducer, useState } from 'react'
 
 import * as Web3 from 'web3'
 import { OpenSeaPort, Network } from 'opensea-js';
-import detectEthereumProvider from '@metamask/detect-provider';
 
 type Action = {type: 'networkChange'}
 type Dispatch = (action: Action) => void
@@ -34,30 +33,23 @@ function Reducer(state: State, action: Action) {
 
 function SeaportProvider({children}: CountProviderProps) {
 
-  const [providerAvailable, setProviderAvailable] = useState(false);
-
   async function getProvider () {
+
     try { 
-      const provider = await detectEthereumProvider();
-      if (provider === true) {
-      //console.log("🚀 ~ window.ethereum is available... Using Injected Web3 Provider");
-      setProviderAvailable(true);
+      if ((window.ethereum?.isMetaMask)) {
+        //console.log("🚀 ~ window.ethereum is available... Using Injected Web3 Provider");
+        web3Provider = window.web3.currentProvider;
       }
     } catch (err) {
       //console.log("🚀 ~ Oops, `window.ethereum` is not defined... Using External Web3 Provider");
-      setProviderAvailable(false);
+      web3Provider =
+      new Web3.default.providers.HttpProvider('https://mainnet.infura.io/v3/0551dcd029704425a5836f593dce29d3');
     }
   }
 
   //Web3 Provider
-  let web3Provider;
-  getProvider();
-  if (providerAvailable === true) {
-    web3Provider = window.web3.currentProvider;
-  } else {
-    web3Provider =
-    new Web3.default.providers.HttpProvider('https://mainnet.infura.io/v3/0551dcd029704425a5836f593dce29d3');
-  }
+  let web3Provider = new Web3.default.providers.HttpProvider('https://mainnet.infura.io/v3/0551dcd029704425a5836f593dce29d3');
+  //getProvider();
 
   //Opensea Port
   const port = new OpenSeaPort(web3Provider, { networkName: Network.Main, apiKey: '5f69ba6e1bea4a2ca7b78fb4a4ddd9ee' });

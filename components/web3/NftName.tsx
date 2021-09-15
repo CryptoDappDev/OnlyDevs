@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { useSeaport } from "../../src/seaportContext";
+import { useSeaport } from "./seaportContext";
 import { OpenSeaAsset } from 'opensea-js/lib/types';
 import Skeleton from '@material-ui/lab/Skeleton';
 

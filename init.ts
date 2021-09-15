@@ -12,7 +12,6 @@ import {
 } from "react-vis";
 import { GoogleMap } from "@react-google-maps/api";
 import {
-  Button as MuiButton,
   ButtonGroup as MuiButtonGroup,
 } from "@material-ui/core";
 
@@ -25,11 +24,14 @@ import { Embed } from "./components/Embed";
 import { Tilt } from "./components/Tilt";
 import { ParallaxWrapper } from "./components/ParallaxWrapper";
 import { Reveal } from "./components/Reveal";
+
 import {MuiTheme} from "./components/Mui/MuiTheme"; 
+import {MuiButton} from "./components/Mui/MuiButton"; 
 import {MuiSubNav} from "./components/Mui/MuiSubNav"; 
 import {MuiNavTab} from "./components/Mui/MuiNavTab"; 
 import { MuiNavPanel } from "./components/Mui/MuiNavPanel";
 import { MuiNavProvider } from "./components/Mui/MuiNavProvider";
+
 
 import { BitSlider } from "./components/Bit/BitSlider"
 import { BitCollapse} from "./components/Bit/BitCollapse"
@@ -39,12 +41,15 @@ import { BitMetaMaskLogo } from "./components/Bit/BitMetaMaskLogo"
 import { BoxFixed } from "./components/Misc/BoxFixed"
 
 import { NftContext } from "./components/web3/NftContext"
+import { NftConsumerWallet } from "./components/web3/NftConsumerWallet"
 import { NftConsumer } from "./components/web3/NftConsumer"
 
 import { NftAsset } from "./components/web3/NftAsset"
 import { NftName } from "./components/web3/NftName"
 
+// <-- ONLYMEMES.DEV PROJECT ID + API TOKEN -->
 
+/*
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -55,8 +60,42 @@ export const PLASMIC = initPlasmicLoader({
   ],
   preview: true,
 });
+*/
 
+// <-- TEST BENCH PROJECT ID + API TOKEN -->
 
+export const PLASMIC = initPlasmicLoader({
+  projects: [
+    {
+      id: "mHWcK7NZcRAyb8v8MxSPJd",
+      token:
+        "sJVGJPc73tYYSml7c25q4V1l3BZp8GHKXM9ojg2msmeEE6QSNqS5xTQMzAlT8eaIK7Ebn91MKZTn7iFlAEtfA",
+    },
+  ],
+  preview: true,
+});
+
+//OpenSea SDK + Web3 Lib Section
+
+PLASMIC.registerComponent(NftConsumerWallet, {
+  name: "NftConsumerWallet",
+  props: {
+    login: "boolean",
+    accountLogin: "slot",
+
+    accountInfo: "boolean",
+    accountAddress: "boolean",
+    accountBalance: "boolean",
+  
+    stateLoggedIn: "boolean",
+    accountLoggedIn: "slot",
+    stateLoggingIn: "boolean",
+    accountLoggingIn: "slot",
+    accountNone: "slot",
+  },
+  importPath: "./components/web3/NftConsumerWallet",
+  importName: "NftConsumerWallet",
+});
 
 PLASMIC.registerComponent(NftConsumer, {
   name: "NftConsumer",
@@ -72,6 +111,13 @@ PLASMIC.registerComponent(NftConsumer, {
     tokenId: "boolean",
     numberOfSales: "boolean",
     children: "slot",
+    buy: "boolean",
+    creator: "boolean",
+    owner: "boolean",
+    fit: {
+      type: "choice",
+      options: ["contain", "cover", "fill", "none", "scale-down"]
+    },
   },
   importPath: "./components/web3/NftConsumer",
   importName: "NftConsumer",
@@ -114,6 +160,8 @@ PLASMIC.registerComponent(NftAsset, {
   importPath: "./components/web3/NftAsset",
   importName: "NftAsset",
 });
+
+//Bit.dev Lib Section
 
 PLASMIC.registerComponent(BitMetaMaskLogo, {
   name: "BitMetaMaskLogo",
@@ -172,6 +220,8 @@ PLASMIC.registerComponent(BitSlider, {
   importName: "BitSlider",
 });
 
+//Material UI Lib Section
+
 PLASMIC.registerComponent(MuiTheme, {
   name: "MuiTheme",
   props: {
@@ -224,6 +274,58 @@ PLASMIC.registerComponent(MuiNavPanel, {
   importPath: "./components/Mui/MuiNavPanel",
   importName: "MuiNavPanel",
 });
+
+
+PLASMIC.registerComponent(MuiSelect, {
+  name: "MuiSelect",
+  props: {
+    defaultValue: "string",
+    options: "object",
+    label: "string",
+  },
+  importPath: "./components/Mui/MuiSelect",
+});
+
+PLASMIC.registerComponent(MuiButtonGroup, {
+  name: "MuiButtonGroup",
+  props: {
+    color: {
+      type: "choice",
+      options: ["primary", "secondary"],
+    },
+    variant: {
+      type: "choice",
+      options: ["contained", "outlined", "text"],
+    },
+    children: "slot",
+  },
+  importPath: "@material-ui/core",
+  importName: "ButtonGroup",
+});
+
+PLASMIC.registerComponent(MuiButton, {
+  name: "MuiButton",
+  props: {
+    children: "slot",
+    disabled: "boolean",
+    color: {
+      type: "choice",
+      options: ["primary", "secondary"],
+    },
+    variant: {
+      type: "choice",
+      options: ["contained", "outlined", "text"],
+    },
+    href: "string",
+    theme: "object",
+  },
+  importPath: "./components/Mui/MuiButton",
+  importName: "MuiButton",
+});
+
+
+// ** BEGIN DEFAULT COMPONENTS ** //
+
 
 PLASMIC.registerComponent(Slider, {
   name: "Slider",
@@ -318,6 +420,10 @@ PLASMIC.registerComponent(YouTube, {
   isDefaultExport: true,
 });
 
+
+//Charting
+
+
 PLASMIC.registerComponent(RadialChart, {
   name: "Radial Chart",
   props: {
@@ -378,52 +484,6 @@ PLASMIC.registerComponent(GoogleMap, {
   importPath: "@react-google-maps/api",
   importName: "GoogleMap",
   classNameProp: "mapContainerClassName",
-});
-
-PLASMIC.registerComponent(MuiSelect, {
-  name: "MuiSelect",
-  props: {
-    defaultValue: "string",
-    options: "object",
-    label: "string",
-  },
-  importPath: "./components/Mui/MuiSelect",
-});
-
-PLASMIC.registerComponent(MuiButtonGroup, {
-  name: "MuiButtonGroup",
-  props: {
-    color: {
-      type: "choice",
-      options: ["primary", "secondary"],
-    },
-    variant: {
-      type: "choice",
-      options: ["contained", "outlined", "text"],
-    },
-    children: "slot",
-  },
-  importPath: "@material-ui/core",
-  importName: "ButtonGroup",
-});
-
-PLASMIC.registerComponent(MuiButton, {
-  name: "MuiButton",
-  props: {
-    children: "slot",
-    disabled: "boolean",
-    color: {
-      type: "choice",
-      options: ["primary", "secondary"],
-    },
-    variant: {
-      type: "choice",
-      options: ["contained", "outlined", "text"],
-    },
-    href: "string",
-  },
-  importPath: "@material-ui/core",
-  importName: "Button",
 });
 
 PLASMIC.registerComponent(DynWiredButton, {
@@ -504,7 +564,9 @@ PLASMIC.registerComponent(Figure, {
   importName: "Figure",
 });
 
+
 //Ant Design
+
 
 PLASMIC.registerComponent(Carousel, {
   name: "Carousel",
@@ -514,7 +576,9 @@ PLASMIC.registerComponent(Carousel, {
   importPath: "antd",
 });
 
+
 //Custom Blocks
+
 
 PLASMIC.registerComponent(Embed, {
   name: "Embed",
@@ -523,6 +587,10 @@ PLASMIC.registerComponent(Embed, {
   },
   importPath: "./components/Embed",
 });
+
+
+//Animation 
+
 
 PLASMIC.registerComponent(Tilt, {
   name: "Tilt",
