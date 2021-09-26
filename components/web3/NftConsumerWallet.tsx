@@ -14,7 +14,7 @@ export function NftConsumerWallet ({...props}) {
   
   useEffect( () => {
     if(window.ethereum?.isMetaMask) {
-      console.log("🚀 ~ file: NftConsumerWallet.tsx ~ line 14 ~ NftConsumerWallet ~ isMetaMask!");
+      //console.log("🚀 ~ file: NftConsumerWallet.tsx ~ line 14 ~ NftConsumerWallet ~ isMetaMask!");
       setMetaMask(true);
     }
   },[])
@@ -23,7 +23,7 @@ export function NftConsumerWallet ({...props}) {
 
     const {Nft} = NFTConsumer();
     const { status, connect, account } = useMetaMask();
-    const [loggedIn, setLoggedin] = useState()
+    const [loggedIn, setLoggedin] = useState();
 
     async function getProvider () {
       try { 

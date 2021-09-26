@@ -47,7 +47,11 @@ import { NftConsumer } from "./components/web3/NftConsumer"
 import { NftAsset } from "./components/web3/NftAsset"
 import { NftName } from "./components/web3/NftName"
 
+
+import { LottieContainer } from "./components/lottie/LottieContainer";
+
 // <-- ONLYMEMES.DEV PROJECT ID + API TOKEN -->
+
 
 export const PLASMIC = initPlasmicLoader({
   projects: [
@@ -59,6 +63,7 @@ export const PLASMIC = initPlasmicLoader({
   ],
   preview: true,
 });
+
 
 // <-- TEST BENCH PROJECT ID + API TOKEN -->
 /*
@@ -73,6 +78,48 @@ export const PLASMIC = initPlasmicLoader({
   preview: true,
 });
 */
+
+//Lottie
+PLASMIC.registerComponent(LottieContainer, {
+  name: "LottieContainer",
+  props: {
+    UrlLottie: "boolean",
+    Url: "string",
+    Loop: "boolean",
+    ActionsClick: "object",
+    ActionsClick2: "object",
+    ActionsClick2Used: "boolean",
+    ActionsClick3: "object",
+    ActionsClick3Used: "boolean",
+    ActionsClickDown: "object",
+    ActionsClickUp: "object",
+    ActionsDoubleClick: "object",
+    ActionsMouseEnter: "object",
+    ActionsMouseLeave: "object",
+    InteractionActions: "object",
+    OnLoopComplete: "object",
+    OnSegmentStart: "object",
+    OnLoaded: "object",
+    children: "slot",
+    DisplayChildren: "boolean",
+    eventChildren: "slot",
+    DisplayEventChildren: "boolean",
+    InteractionActionMode: {
+      type: "choice",
+      options: ["scroll", "cursor"]
+    },
+    
+    LottieImageFile: {
+      type: "choice",
+      options: ["Meemo","LowEth","NoAuth","Dots","ConfirmButton","CloseButton","CashWallet"]
+    },
+    style: "object",
+    styleChildren: "object",
+    styleEventChildren: "object",
+  },
+  importPath: "./components/lottie/LottieContainer",
+  importName: "LottieContainer",
+});
 
 //OpenSea SDK + Web3 Lib Section
 
@@ -105,22 +152,46 @@ PLASMIC.registerComponent(NftConsumer, {
     description: "boolean",
     collectionName: "boolean",
     collectionDescription: "boolean",
+    ShowCheckOut: "boolean",
+    ShowLowEthFlag: "boolean",
+    lowEthBuyFiat: "slot",
+    ShowSuccessFlag: "boolean",
+    ShowUserRejectedFlag: "boolean",
+    ShowBuyFiatFlag: "boolean",
+    FiatWindowStyle: "object",
+    ShowAwaitingOrder: "boolean",
     externalLink: "boolean",
     contract: "boolean",
     tokenId: "boolean",
     numberOfSales: "boolean",
-    children: "slot",
+    buySignedIn: "slot",
+    buyNotSignedIn: "slot",
+    checkout: "slot",
+    checkoutBtn: "slot",
+    lowEthFlag: "slot",
+    successFlag: "slot",
+    userRejectedFlag: "slot",
+    awaitingOrder: "slot",
     buy: "boolean",
     creator: "boolean",
+    creatorImage: "boolean",
     owner: "boolean",
+    price: "boolean",
     fit: {
       type: "choice",
       options: ["contain", "cover", "fill", "none", "scale-down"]
     },
+
+    ownerName: "object",
+    ownerAddress: "object",
+    ownerNumAssets: "object",
+    ImageStyle: "object"
+    
   },
   importPath: "./components/web3/NftConsumer",
   importName: "NftConsumer",
 });
+
 
 PLASMIC.registerComponent(NftContext, {
   name: "NftContext",
@@ -128,7 +199,7 @@ PLASMIC.registerComponent(NftContext, {
     openseaAddress: "boolean",
     tokenAddress: "string",
     tokenId: "string",
-    children: "slot",
+    children: "slot"
   },
   importPath: "./components/web3/NftContext",
   importName: "NftContext",

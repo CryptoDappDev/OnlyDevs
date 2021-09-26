@@ -12,6 +12,8 @@ import { SeaportProvider} from "../components/web3/seaportContext";
 import { MetaMaskProvider } from "metamask-react";
 import * as Web3 from 'web3'
 
+import '../styles/order.css';
+
 function MyApp({ Component, pageProps }: AppProps) {
 
   const [meta, setMeta] = useState(false);
