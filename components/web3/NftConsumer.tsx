@@ -387,19 +387,6 @@ export function NftConsumer ({...props}) {
       
       //const { order, accountAddress, page } = props;
       const [order, setOrder] = useState<any>();  
-       
-      async function getOrders() {
-
-        const {orders, count} = await opensea.seaport.api.getOrders( {
-          bundled: false,
-          asset_contract_address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
-          token_id: NftAnyType.assets[0].token_id,
-          limit: 1
-        });
-        setOrder(orders[0]);
-      }
-
-      getOrders();
       
       const { status, connect, account } = useMetaMask();
       
@@ -436,9 +423,6 @@ export function NftConsumer ({...props}) {
         ref.current.open();
         setShowModal(true);
         FetchEthPrice();
-      
-        //FetchOrder();
-      
       }
 
       useEffect(() => {
@@ -584,29 +568,39 @@ export function NftConsumer ({...props}) {
       
         async function fulfillOrder() {
           setCreatingOrder(true);
-          
-          try {
-            let seaport;
-            if (status === "unavailable") {
-              console.log('Using Wallet Connect Provider...');
-              let provider = new WalletConnectProvider({ infuraId: "0551dcd029704425a5836f593dce29d3" });
-              seaport = opensea.seaport;
-              await provider.enable();
-            } else { 
-              console.log('Using Injected Web3 Provider...'); 
-              seaport = opensea.seaport;
+
+          //Get Order First
+          const {orders, count} = await opensea.seaport.api.getOrders( {
+            bundled: false,
+            asset_contract_address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
+            token_id: NftAnyType.assets[0].token_id,
+            limit: 1
+          });
+          setOrder(orders[0]);
+          setTimeout(async () => {
+            try {
+              let seaport;
+              if (status === "unavailable") {
+                console.log('Using Wallet Connect Provider...');
+                let provider = new WalletConnectProvider({ infuraId: "0551dcd029704425a5836f593dce29d3" });
+                seaport = opensea.seaport;
+                await provider.enable();
+              } else { 
+                console.log('Using Injected Web3 Provider...'); 
+                seaport = opensea.seaport;
+              }
+        
+              let accountAddress : string = account!;
+              //console.log("🚀 ~ Fulfill Order: ", order);
+              await seaport.fulfillOrder({ order, accountAddress });
+                
+            } catch(error) {
+              onError(error)
+            } finally {
+              console.log('🚀 ~ Error Msg State:');
+              console.log("🚀 ~ Error Message: " + errmsg);
             }
-      
-            let accountAddress : string = account!;
-            //console.log("🚀 ~ Fulfill Order: ", order);
-            await seaport.fulfillOrder({ order, accountAddress });
-              
-          } catch(error) {
-            onError(error)
-          } finally {
-            console.log('🚀 ~ Error Msg State:');
-            console.log("🚀 ~ Error Message: " + errmsg);
-          }
+          }, 2500);
           
           if(errmsg == '') {
             //console.log('🚀 ~ Sucess Msg Sent');
