@@ -78,8 +78,7 @@ export function LottieContainer({...props}) {
 		const [lottieClick, setLottieClick] = useState(1);
 		const [direction, setDirection] = useState(1);
 
-		//console.log("🚀 ~ file: Lottie.tsx ~ line 22 ~ Lottie ~ Lottie MEEMO Data: ", MeemoLottie);
-		//console.log("🚀 ~ file: Lottie.tsx ~ line 22 ~ Lottie ~ Lottie JSON Data: ", lottieJSON);
+		//Start Here
 
 		const options = {
 			animationData : lottieJSON,
@@ -89,8 +88,6 @@ export function LottieContainer({...props}) {
 			onLoopComplete : handleOnLoopComplete,
 			onSegmentStart : handleOnSegmentStart,
 		};
-		
-		//console.log("🚀 ~ file: Lottie.tsx ~ line 22 ~ Lottie ~ Lottie JSON OPTIONS: ", options);
 
 		const lottieObj = useLottie(options, lottieStyle);
 		const Animation = useLottieInteractivity({
@@ -99,18 +96,10 @@ export function LottieContainer({...props}) {
 			actions: props.InteractionActions,
 		});
 
-		/*
-		//Future Addition: Child Triggered Lottie Events
-		//Create LottieObj Context
-		const LottieContextProvider = 
-		React.createContext < { Lottie: typeof lottieObj } | undefined > (undefined);
-		const Lottie = lottieObj;
-		const value = {Lottie};
-		*/
 
 		/**
 		 * 
-		 * Set Styles on Lottie and Children
+		 * Set Styles on Lottie and Children, Make them Separate so they dont fire all the time
 		 */
 		useEffect (() => {
 			
@@ -250,7 +239,7 @@ export function LottieContainer({...props}) {
 				} else if(props.ActionsClick3Used == true) {
 					setLottieClick(3);
 				} else { setLottieClick(1) }
-				console.log("🚀 ~ file: LottieContainer.tsx ~ line 52 ~ handleHover ~ I Have Been Clicked Once!");
+				//console.log("🚀 ~ file: LottieContainer.tsx ~ line 52 ~ handleHover ~ I Have Been Clicked Once!");
 				if(props.ActionsClick != null && props.ActionsClick != undefined) { handleActions( props.ActionsClick, 0 ) }
 			}
 			
@@ -261,7 +250,7 @@ export function LottieContainer({...props}) {
 					setLottieClick(1);
 				}
 				if(props.ActionsClick2Used == true) {
-					console.log("🚀 ~ file: LottieContainer.tsx ~ line 52 ~ handleHover ~ I Have Been Clicked Twice!");
+					//console.log("🚀 ~ file: LottieContainer.tsx ~ line 52 ~ handleHover ~ I Have Been Clicked Twice!");
 					if(props.ActionsClick2 != null && props.ActionsClick2 != undefined) { handleActions( props.ActionsClick2, 0 ) }
 				}	
 			}
@@ -269,7 +258,7 @@ export function LottieContainer({...props}) {
 			else if (lottieClick == 3) { 
 				setLottieClick(1);
 				if(props.ActionsClick3Used == true) {
-					console.log("🚀 ~ file: LottieContainer.tsx ~ line 52 ~ handleHover ~ I Have Been Clicked Three Times!");
+					//console.log("🚀 ~ file: LottieContainer.tsx ~ line 52 ~ handleHover ~ I Have Been Clicked Three Times!");
 					if(props.ActionsClick3 != null && props.ActionsClick3 != undefined) { handleActions( props.ActionsClick3, 0 ) }
 				}
 			}

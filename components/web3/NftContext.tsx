@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { usePageContext, usePageEventContext, usePageLocations } from './NftPageContext';
 
 //Nft Context Provider
 const NftContextProvider = 
@@ -10,21 +11,25 @@ React.createContext < {Nft_events: string; setNFT_events : React.Dispatch<React.
 
 export function NftContext({...props}) {
 
-  //UseState for Nft Context
+  //UseState for Nft Contexts and Requests
   const [Nft, setNFT] = useState("");
-  //UseState for Nft Event Context
   const [Nft_events, setNFT_events] = useState("");
-
   const[Nft_token, setNft_token] = useState("");
   const[Nft_token_Res, setNft_token_Res] = useState("");
-
   const[Nft_contract, setNft_contract] = useState("");
-
   
   
   //Context Variables
   const value = {Nft, setNFT};
   const value_events = {Nft_events, setNFT_events};
+
+  //Page Context Variables
+  const {NftPageContext} = usePageContext();
+  const {NftPageLocations} = usePageLocations();
+  const {NftEventPageContext} = usePageEventContext();
+
+  //Global Variables
+  let NftFound : boolean = false;
 
   /**
    * Gets Nft from OpenSea API using fetch
@@ -166,23 +171,104 @@ export function NftContext({...props}) {
     }
 	}
 
+
+  function CheckForNFT () {
+    //console.log("🚀  ~ NFT Check...");
+    
+    if(NftPageLocations.length != 0) {
+      //console.log("🚀  ~ We have NFTs in the Context!");
+
+      for(let i=0; i<NftPageLocations.length; i++) {
+
+        //console.log("🚀  ~ NFT Under Inspection: ", NftPageContext[i].token_id );
+        //console.log("🚀  ~ What We wanna see: ", props.tokenAddress);
+
+        //console.log("🚀  ~ What We wanna see: ", props.location);
+        //console.log("🚀  ~ Stack under inspection: ", NftPageLocations);
+        //console.log("🚀  ~ Stack needle: ", NftPageLocations[i]);
+
+        if( NftPageLocations[i].includes( props.location ) ) {
+          //console.log("🚀  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 🚀 ");
+          //console.log("🚀  ~ We found the location we are looking for!");
+
+          //console.log("🚀 ~ file: NftContext.tsx ~ line 194 ~ NftContext ~ Collecting Nft Locations From Page!", NftPageLocations);
+          //console.log("🚀 ~ file: NftContext.tsx ~ line 195 ~ NftContext ~ Collecting Nft Info From Page!", NftPageContext);
+          //console.log("🚀 ~ file: NftContext.tsx ~ line 196 ~ NftContext ~ Collecting Nft Event Info From Page!", NftEventPageContext);
+
+          if (!(NftPageContext[i] == undefined)) {
+
+            NftFound = true;
+            
+            setNFT(NftPageContext[i]);
+            setNFT_events(NftEventPageContext[i]);
+            //console.log("🚀  ~ NFT has been loaded: ", NftPageContext[i]);
+            //console.log("🚀  ~ NFT Events has been loaded: ", NftEventPageContext[i]);
+            //console.log("🚀  ~ NFT has been loaded Value: ", Nft);
+            //console.log("🚀  ~ NFT Events has been loaded Value: ", Nft_events);
+
+          } 
+          //console.log("🚀  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 🚀 ");
+
+          
+          //Set up Nft info into Context Here
+
+        }
+      }
+      if(NftFound == false) {
+        setTimeout( () => {
+          //console.log("🚀  ~ NFT not loaded yet...: ");
+          CheckForNFT();
+        },500)
+      }
+    } 
+  }
+
 	useEffect (() => {
 
     //console.log("🚀 ~ file: NftContext.tsx ~ line 30 ~ props.tokenId", props);
     //console.log("🚀 ~ file: NftContext.tsx ~ line 30 ~ Before Call NFT", Nft);
 
-    if ((isNaN(props.tokenId)) || (props.tokenId.trim() === "")) { 
-			//console.log("🚀 ~ Not a Number")
-		} else {
-      //console.log("🚀 ~ Getting NFT...")
-      if(props.openseaAddress == true) {
-        setNft_contract(props.tokenAddress);
-      } 
-      setNft_token(props.tokenId);
-			setTimeout(() => {getNFT()},250);
-		}
+    if (!(props.data == true)) {
+
+      if ((isNaN(props.tokenId)) || (props.tokenId.trim() === "")) { 
+
+        //console.log("🚀 ~ Not a Number")
+      } else {
+
+        //console.log("🚀 ~ Getting NFT...")
+        if(props.openseaAddress == true) {
+
+          setNft_contract(props.tokenAddress);
+        } 
+        setNft_token(props.tokenId);
+        setTimeout(() => {getNFT()},250);
+      }
+    } else {
+      //console.log("🚀 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 🚀 ");
+      //console.log("🚀 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 🚀 ");
+      //console.log("🚀  ~ Collecting Nft Data From Page Context: ", NftPageContext);
+      //console.log("🚀  ~ Collecting Nft Data From Page Context: ", NftPageContext.length);
+      //console.log("🚀  ~ Nft Context Location we are looking for: ", props.location);
+
+      CheckForNFT();
+
+      //console.log("🚀  ~ NFT Page Context Length: ", JSON.parse(NftPageContext));
+      
+      //console.log("🚀 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 🚀 ");
+      //console.log("🚀 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 🚀 ");
+
+
+      //setNFT("");
+      //console.log("🚀  ~ Nft has been programmatically set: ", Nft);
+    }
 
     //console.log("🚀 ~ file: NftContext.tsx ~ line 30 ~ After Call NFT", Nft);
+
+    if (props.data == true) {
+
+      //console.log("🚀 ~ file: NftContext.tsx ~ line 25 ~ NftContext ~ Collecting Nft From Page!", NftStack);
+      //console.log("🚀 ~ file: NftContext.tsx ~ line 25 ~ NftContext ~ Collecting Nft From Page!", props);
+    }
 
 	},[props])
   
@@ -199,7 +285,7 @@ export function NftContext({...props}) {
 export function NFTConsumer() {
   const context = React.useContext(NftContextProvider)
   if (context === undefined) {
-    throw new Error('NftContext must be used within a NftContext Provider')
+    throw new Error('NftConsumer must be used within a NftContext Provider')
   }
   return context
 }

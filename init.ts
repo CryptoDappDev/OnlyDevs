@@ -40,8 +40,9 @@ import { BitMetaMaskLogo } from "./components/Bit/BitMetaMaskLogo"
 
 import { BoxFixed } from "./components/Misc/BoxFixed"
 
+import { NftPageContext } from "./components/web3/NftPageContext"
 import { NftContext } from "./components/web3/NftContext"
-import { NftConsumerWallet } from "./components/web3/NftConsumerWallet"
+import { WalletContext } from "./components/web3/WalletContext"
 import { NftConsumer } from "./components/web3/NftConsumer"
 
 import { NftAsset } from "./components/web3/NftAsset"
@@ -50,23 +51,21 @@ import { NftName } from "./components/web3/NftName"
 
 import { LottieContainer } from "./components/lottie/LottieContainer";
 
-// <-- ONLYMEMES.DEV PROJECT ID + API TOKEN -->
-
-
+// <-- ONLYMEMES.COM PROJECT ID + API TOKEN -->
+/*
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
       id: "tmuAPCL8N7XuwKcavmJW8E",
-      token:
-        "JCaoR0m0OZnRimzhPSmtgPoyGYlvg34Ga6RbwOzC74KvWKdmNHdlsDRS5kbOAAIYzAaZi0sg8f1cf4wf0KhxA",
+      token: "JCaoR0m0OZnRimzhPSmtgPoyGYlvg34Ga6RbwOzC74KvWKdmNHdlsDRS5kbOAAIYzAaZi0sg8f1cf4wf0KhxA",
     },
   ],
-  preview: true,
+  preview: false,
 });
-
+*/
 
 // <-- TEST BENCH PROJECT ID + API TOKEN -->
-/*
+
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -77,7 +76,7 @@ export const PLASMIC = initPlasmicLoader({
   ],
   preview: true,
 });
-*/
+
 
 //Lottie
 PLASMIC.registerComponent(LottieContainer, {
@@ -123,12 +122,30 @@ PLASMIC.registerComponent(LottieContainer, {
 
 //OpenSea SDK + Web3 Lib Section
 
-PLASMIC.registerComponent(NftConsumerWallet, {
-  name: "NftConsumerWallet",
+PLASMIC.registerComponent(NftPageContext, {
+  name: "NftPageContext",
+  props: {
+    locations: "object",
+    overrides: "object",
+    page: {
+      type:"choice",
+      options: [ "Home","Feed","Explore","Roadmap","Profile" ]
+    },
+    children: "slot",
+  },
+  importPath: "./components/web3/NftPageContext",
+  importName: "NftPageContext",
+});
+
+
+PLASMIC.registerComponent(WalletContext, {
+  name: "WalletContext",
   props: {
     login: "boolean",
     accountLogin: "slot",
 
+    fakeName: "string",
+    accountName: "boolean",
     accountInfo: "boolean",
     accountAddress: "boolean",
     accountBalance: "boolean",
@@ -139,8 +156,8 @@ PLASMIC.registerComponent(NftConsumerWallet, {
     accountLoggingIn: "slot",
     accountNone: "slot",
   },
-  importPath: "./components/web3/NftConsumerWallet",
-  importName: "NftConsumerWallet",
+  importPath: "./components/web3/WalletContext",
+  importName: "WalletContext",
 });
 
 PLASMIC.registerComponent(NftConsumer, {
@@ -196,6 +213,8 @@ PLASMIC.registerComponent(NftConsumer, {
 PLASMIC.registerComponent(NftContext, {
   name: "NftContext",
   props: {
+    data: "boolean",
+    location: "string",
     openseaAddress: "boolean",
     tokenAddress: "string",
     tokenId: "string",

@@ -1,4 +1,4 @@
-import React, { Children, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { NFTConsumer } from './NftContext';
 import { NFTEventsConsumer } from './NftContext';
 import { useSeaport } from './seaportContext';
@@ -6,353 +6,381 @@ import { useMetaMask } from "metamask-react";
 
 import Popup from 'reactjs-popup';
 
-
 //Lotties
 import Lottie from "lottie-react";
 import closeButton from '../lottie/Modal/closeButton.json';
-import confirmButton from '../lottie/Modal/confirmButton.json';
-import loadingDots from '../lottie/Modal/loadingDots.json';
-import moneyLottie from '../lottie/Modal/money.json';
-import cashLottie from '../lottie/Modal/cash.json';
-import noauthLottie from '../lottie/Modal/noauth.json';
-import MeemoLottie from '../lottie/Meemo/Meemo.json';
-
-import WalletConnect from "@walletconnect/client";
-import QRCodeModal from "@walletconnect/qrcode-modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-
-import OnramperWidget from "@onramper/widget";
 
 export function NftConsumer ({...props}) {
 
+  //PrivateKey Holders Vs. Non Holders
   const [isMetaMask, setMetaMask] = useState(false);
+
+  //Hooks
+  const {opensea} = useSeaport();
+
+  //Nft Contexts
+  const {Nft} = NFTConsumer();
+  const {Nft_events} = NFTEventsConsumer();
+
+  //Unsafe Variable Types
+  let NftAnyType : any = "Null";
+  let Nft_eventsAnyType : any = "Null";
+  //let NftLoaded : any = false;
+
+  //States
+  const [NftReady, setNftReady] = useState("None");
+  const [NftLoaded, setNftLoaded] = useState("None");
+
+  const [name, setName] = useState("");
+  const [Nftprice, setNftPrice] = useState(0);
+  let price = 0; //WorkAround
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
+  const [collectionName, setCollectionName] = useState("");
+  const [collectionDescription, setCollectionDescription] = useState("");
+  const [contract, setContract] = useState("");
+  const [token, setToken] = useState("");
+  const [creator, SetCreator] = useState("");
+  const [creatorImage, SetCreatorImage] = useState("");
+  const [externalLink, setExternalLink] = useState("");
+  const [numSales, setNumSales] = useState("");
+
+
+  //State Derivatives
+  const [Nft_owner_names, setNft_owner_names] = useState([""]);
+  const [Nft_owner_address, setNft_owner_address] = useState([""]);
+  const [Nft_owner_numAssets, setNft_owner_numAssets] = useState([0]);
+  const [Nft_num_owner, setNft_num_owner] = useState(0);
+  const [Nft_owner_image, setNft_owner_image] = useState([""]);
   
   useEffect( () => {
     if(window.ethereum?.isMetaMask) {
-      //console.log("🚀 ~ file: NftConsumerWallet.tsx ~ line 14 ~ NftConsumerWallet ~ isMetaMask!");
+      //console.log("🚀 ~ MetaMask Wallet API detected!");
       setMetaMask(true);
     }
   },[]);
 
   function MetaMaskConsumer ({...props}) {
-
-    //Hooks
-    const {opensea} = useSeaport();
-    const { account } = useMetaMask();
-
-    //Context
-    const {Nft} = NFTConsumer();
-    const {Nft_events} = NFTEventsConsumer();
-
-    //Unsafe Variable Types
-    let NftAnyType : any = Nft;
-    let Nft_eventsAnyType : any = Nft_events;
-  
-    //States
-    const [Nft_data, setNft_data] = useState("null");
-    const [Nft_data_events, setNft_data_events] = useState("null");
-
-    //State Derivatives
-    const [Nft_owner_names, setNft_owner_names] = useState([""]);
-    const [Nft_owner_address, setNft_owner_address] = useState([""]);
-    const [Nft_owner_numAssets, setNft_owner_numAssets] = useState([0]);
-    const [Nft_num_owner, setNft_num_owner] = useState(0);
-    const [Nft_owner_image, setNft_owner_image] = useState([""]);
-
-
-    const [Nft_price, setNft_price] = useState(0);
-
-
-
+    
     useEffect (() => {
 
-      //Debug
-      // // // // //console.log("🚀 ~ file: NftConsumer.tsx ~ line 41 ~ useEffect ~ props", props)
-      //console.log("🚀 ~ file: NftConsumer.tsx ~ line 42 ~ useEffect ~ NFT ~ ", Nft)
-      //console.log("🚀 ~ file: NftConsumer.tsx ~ line 43 ~ useEffect ~ NFT EVENTS ~ ", Nft_events)
+      //Once Context is updated, extract Nft Data
+      //console.log("🚀 ~ Nft Change Detected");
+      CheckNftData();
+      //console.log("🚀 ~ Post Nft Data Fill ~ ", NftAnyType);
+      //console.log("🚀 ~ Post Nft Event Fill ~ ", Nft_eventsAnyType);
 
-      //Check to see if this asset is already loaded
-      if ((Nft_data === Nft) && (Nft_data_events === Nft_events)) {
-        //console.log("🚀 ~ NFT ALREADY CONSUMED");
-
-      } else {
-
-        //Will set to null or Hydrated UI on first load
-        setNft_data(Nft);
-        setNft_data_events(Nft_events);
-
-        //Any type for JSON object coming from API call
-
-        //Make Sure Request has been completely filled 
-        if( (!( Nft == "")) && (!( Nft_events == "")) ) {
-          
-          //console.log("🚀 ~ SORTING REQUESTED");
-
-          //console.log("🚀 ~ TEST ~ " + Nft_eventsAnyType.asset_events.length);
-
-          //Logic to Determine State Derivatives of this Nft
-          //console.log("🚀 ~ file: NftConsumer.tsx ~ line 43 ~ useEffect ~ NFT UPDATE ~ START");
-
-          //Loop over all Events Found
-          //console.log("🚀 ~ REQUESTED EVENTS: ", JSON.stringify(Nft_eventsAnyType));
-          //console.log("🚀 ~ REQUESTED EVENTS: ", Nft_eventsAnyType);
-          //console.log("🚀 ~ REQUESTED NFT: ", NftAnyType);
-
-          let count : number = Nft_eventsAnyType.asset_events.length;
+    },[Nft ,Nft_events]);
 
 
-          let owner : string[] = [];
-          let ownerAddress : string[] = [];
-          let ownerNumOfAssets : number[] = [];
-          let ownerImage : string[] = [];
-          let numOwners : number = 0;
+    function CheckNftData() {      
 
-          //Loop through all events on this Nft and extract State Derivaties
-          for(let i=0; i < count; i++) {
-            //console.log("🚀 ~ EVENT LOOP " + i);
+      //Set any type Variable to allow JSON properties on variable
+      NftAnyType = Nft;
+      Nft_eventsAnyType = Nft_events;
+      //console.log("🚀 ~ file: NftConsumer.tsx ~ line 59 ~ useEffect ~ NFT Context ~ ", Nft);
+      //console.log("🚀 ~ file: NftConsumer.tsx ~ line 60 ~ useEffect ~ NFT Event Context ~ ", Nft_events);
+      //console.log("🚀 ~ file: NftConsumer.tsx ~ line 59 ~ useEffect ~ NFT Type ~ ", NftAnyType);
+      //console.log("🚀 ~ file: NftConsumer.tsx ~ line 60 ~ useEffect ~ NFT EVENTS Type ~ ", Nft_eventsAnyType);
+      //onsole.log("🚀 ~ file: NftConsumer.tsx ~ line 59 ~ useEffect ~ NFT Any Type NAME ~ ", NftAnyType.name);
 
-            //console.log("🚀 ~ EVENT LOOP TRANSFER QUANTITY " + Nft_eventsAnyType.asset_events[i].quantity);
+      try {
+        if(Nft_eventsAnyType.asset_events.length != undefined) {
+          if(NftAnyType.name != undefined) {
+            //console.log("🚀 ~ NFT IS ready");
+            setNftReady("Ready");
+          }
+        }
+      } catch(e) {
+        //console.log("🚀 ~ NFT NOT ready");
+      }
 
-            //First Owner Event, Always put in Array position 1
-            if( numOwners < 1 ) {
-              
-              if ((Nft_eventsAnyType.asset_events[i].to_account.user === null) || (Nft_eventsAnyType.asset_events[i].to_account.user.username === null)) {
-                owner[0] = "Anonymous";
-                //console.log("🚀 ~ TESTING FIRST OWNER ADDRESS EVENT " + owner[0]);
-              } else { 
-                owner[0] = Nft_eventsAnyType.asset_events[i].to_account.user.username 
-                //console.log("🚀 ~ TESTING FIRST OWNER ADDRESS EVENT " + owner[0]);
-              }
-              
-              //console.log("🚀 ~ TESTING FIRST OWNER ADDRESS EVENT " + ownerAddress[0]);
-              ownerAddress[0] = Nft_eventsAnyType.asset_events[i].to_account.address;
+      //Make Sure Request has been completely filled 
+      if( (NftReady == "Ready") && (NftLoaded != "Done") ) {
 
-              //Increment ownerNumOfAssets of first owner by quantity
-              ownerNumOfAssets[0] = 0;
-              ownerNumOfAssets[0] = +ownerNumOfAssets[0] + +Nft_eventsAnyType.asset_events[i].quantity;
+        //console.log("🚀 ~ file: NftConsumer.tsx ~ line 60 ~ useEffect ~ NFT EVENTS Type TEST ~ ", Nft_eventsAnyType.asset_events.length);
+        
+        //console.log("🚀 ~ NFT should now be loaded: ", NftLoaded);
 
-              //Set owner Image 
-              ownerImage[0] = Nft_eventsAnyType.asset_events[i].to_account.profile_img_url;
+        //console.log("🚀 ~ TEST ~ " + Nft_eventsAnyType.asset_events.length);
 
-              //Increment Owners by 1 -> it always starts as 0, now its 1, the next position availble in the array 
-              numOwners++;
+        //Logic to Determine State Derivatives of this Nft
+        //console.log("🚀 ~ file: NftConsumer.tsx ~ line 43 ~ useEffect ~ NFT UPDATE ~ START");
 
-            //Additional Owners requires for loop to check for duplicates
-            } else {
-              //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT " + i);
+        //Loop over all Events Found
+        //console.log("🚀 ~ REQUESTED EVENTS: ", JSON.stringify(Nft_eventsAnyType));
+        //console.log("🚀 ~ REQUESTED EVENTS: ", Nft_eventsAnyType);
+        //console.log("🚀 ~ REQUESTED NFT: ", NftAnyType);
 
-              //Account being added / incremented
-              //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ACCOUNT " + Nft_eventsAnyType.asset_events[i].to_account.address);
-              
-              //Loop through entire owner list and try to find owner
-              let newusr : boolean = true;
+        let count : number = Nft_eventsAnyType.asset_events.length;
 
-              for (let m=0; m<numOwners; m++) {
 
-                if((ownerAddress[m] ===  Nft_eventsAnyType.asset_events[i].to_account.address) && (newusr === true)) {
-                  //This person already owns one of these, Increment ownerNumOfAssets
-                  //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT DUPLICATE FOUND");
-                  //console.log("🚀 ~ TESTING PROVIDER EVENT BEFORE QUANTITY: " + ownerNumOfAssets[m]);
-                  let tmp : number = Nft_eventsAnyType.asset_events[i].quantity;
-                  if (tmp > 1) {
-                    ownerNumOfAssets[m] = +ownerNumOfAssets[m] + +tmp;
-                  } else {
-                    ownerNumOfAssets[m] = ownerNumOfAssets[m] + 1;
-                  }
-                  //console.log("🚀 ~ TESTING PROVIDER EVENT AFTER QUANTITY: " + ownerNumOfAssets[m]);
 
-                  //Set newusr to false!!
-                  newusr = false;
+        let owner : string[] = [];
+        let ownerAddress : string[] = [];
+        let ownerNumOfAssets : number[] = [];
+        let ownerImage : string[] = [];
+        let numOwners : number = 0;
 
-                } 
-              }
-              //If we didnt find a previous owner then this is a new owner
-              if (newusr === true) {
-                //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT NO DUPLICATE FOUND... ADDING NEW USER");
-                
-                //Adding new user or Anonymous owner
-                if ((Nft_eventsAnyType.asset_events[i].to_account.user === null) || (Nft_eventsAnyType.asset_events[i].to_account.user.username === null)) {
-                  //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD USERNAME " + "Anonymous");
-                  owner[numOwners] = "Anonymous"
-                } else {
-                  //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD USERNAME " + Nft_eventsAnyType.asset_events[i].to_account.user.username);
-                  owner[numOwners] = Nft_eventsAnyType.asset_events[i].to_account.user.username;
-                }
-                
-                //Adding new address owner
-                //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD ACCOUNT " + Nft_eventsAnyType.asset_events[i].to_account.address);
-                ownerAddress[numOwners] = Nft_eventsAnyType.asset_events[i].to_account.address;
+        //Loop through all events on this Nft and extract State Derivaties
+        for(let i=0; i < count; i++) {
+          //console.log("🚀 ~ EVENT LOOP " + i);
 
-                //Increment number of assets
-                ownerNumOfAssets[numOwners] = 0;
-                let tmp : number = Nft_eventsAnyType.asset_events[i].quantity
-                if (tmp > 1) {
-                  ownerNumOfAssets[numOwners] = +ownerNumOfAssets[numOwners] + +tmp;
-                } else {
-                  ownerNumOfAssets[numOwners] = ownerNumOfAssets[numOwners] + 1;
-                }
+          //console.log("🚀 ~ EVENT LOOP TRANSFER QUANTITY " + Nft_eventsAnyType.asset_events[i].quantity);
 
-                //Set Profile Pic
-                ownerImage[numOwners] = Nft_eventsAnyType.asset_events[i].to_account.profile_img_url;
-                
-
-                //Increment number of owners
-                numOwners++;
-                
-              }
-            }      
+          //First Owner Event, Always put in Array position 1
+          if( numOwners < 1 ) {
             
-            //Provider 
+            if ((Nft_eventsAnyType.asset_events[i].to_account.user === null) || (Nft_eventsAnyType.asset_events[i].to_account.user.username === null)) {
+              owner[0] = "Anonymous";
+              //console.log("🚀 ~ TESTING FIRST OWNER ADDRESS EVENT " + owner[0]);
+            } else { 
+              owner[0] = Nft_eventsAnyType.asset_events[i].to_account.user.username 
+              //console.log("🚀 ~ TESTING FIRST OWNER ADDRESS EVENT " + owner[0]);
+            }
             
-            //Check if Provider is an owner, if not add them, then decrement their ownsership by one
-            //console.log("🚀 ~ TESTING PROVIDER ADDRESS EVENT " + JSON.stringify(Nft_eventsAnyType.asset_events[i].from_account));
-            
-            //Loop through entire owner list and try to find Provider
-            let newusrProvider : boolean = true;
-            for (let x=0; x<numOwners; x++) {
+            //console.log("🚀 ~ TESTING FIRST OWNER ADDRESS EVENT " + ownerAddress[0]);
+            ownerAddress[0] = Nft_eventsAnyType.asset_events[i].to_account.address;
 
-              if((ownerAddress[x] ===  Nft_eventsAnyType.asset_events[i].from_account.address) && (newusrProvider === true)) {
+
+            //Increment ownerNumOfAssets of first owner by quantity
+            ownerNumOfAssets[0] = 0;
+            ownerNumOfAssets[0] = +ownerNumOfAssets[0] + +Nft_eventsAnyType.asset_events[i].quantity;
+
+            //Set owner Image 
+            ownerImage[0] = Nft_eventsAnyType.asset_events[i].to_account.profile_img_url;
+
+            //Increment Owners by 1 -> it always starts as 0, now its 1, the next position availble in the array 
+            numOwners++;
+
+          //Additional Owners requires for loop to check for duplicates
+          } else {
+            //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT " + i);
+
+            //Account being added / incremented
+            //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ACCOUNT " + Nft_eventsAnyType.asset_events[i].to_account.address);
+            
+            //Loop through entire owner list and try to find owner
+            let newusr : boolean = true;
+
+            for (let m=0; m<numOwners; m++) {
+
+              if((ownerAddress[m] ===  Nft_eventsAnyType.asset_events[i].to_account.address) && (newusr === true)) {
                 //This person already owns one of these, Increment ownerNumOfAssets
                 //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT DUPLICATE FOUND");
-                
-                //Check if from Null address, then dont decrement
-                //console.log("🚀 ~ TESTING PROVIDER EVENT ADDRESS: " + Nft_eventsAnyType.asset_events[i].from_account.address);
-                
-                if(Nft_eventsAnyType.asset_events[i].from_account.address == "0x0000000000000000000000000000000000000000") {
-                  //console.log("🚀 ~ OWNER EVENT NULL ADDRESS FOUND");
+                //console.log("🚀 ~ TESTING PROVIDER EVENT BEFORE QUANTITY: " + ownerNumOfAssets[m]);
+                let tmp : number = Nft_eventsAnyType.asset_events[i].quantity;
+                if (tmp > 1) {
+                  ownerNumOfAssets[m] = +ownerNumOfAssets[m] + +tmp;
                 } else {
-                  let tmp : number = Nft_eventsAnyType.asset_events[i].quantity;
-                  ownerNumOfAssets[x] = +ownerNumOfAssets[x] - +tmp;
+                  ownerNumOfAssets[m] = ownerNumOfAssets[m] + 1;
                 }
+                //console.log("🚀 ~ TESTING PROVIDER EVENT AFTER QUANTITY: " + ownerNumOfAssets[m]);
 
                 //Set newusr to false!!
-                newusrProvider = false;
+                newusr = false;
 
               } 
             }
-
             //If we didnt find a previous owner then this is a new owner
-            if (newusrProvider === true) {
+            if (newusr === true) {
               //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT NO DUPLICATE FOUND... ADDING NEW USER");
               
               //Adding new user or Anonymous owner
-              if ((Nft_eventsAnyType.asset_events[i].from_account.user === null) || (Nft_eventsAnyType.asset_events[i].from_account.user.username === null)) {
+              if ((Nft_eventsAnyType.asset_events[i].to_account.user === null) || (Nft_eventsAnyType.asset_events[i].to_account.user.username === null)) {
                 //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD USERNAME " + "Anonymous");
                 owner[numOwners] = "Anonymous"
               } else {
                 //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD USERNAME " + Nft_eventsAnyType.asset_events[i].to_account.user.username);
-                owner[numOwners] = Nft_eventsAnyType.asset_events[i].from_account.user.username;
+                owner[numOwners] = Nft_eventsAnyType.asset_events[i].to_account.user.username;
               }
               
               //Adding new address owner
               //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD ACCOUNT " + Nft_eventsAnyType.asset_events[i].to_account.address);
-              ownerAddress[numOwners] = Nft_eventsAnyType.asset_events[i].from_account.address;
+              ownerAddress[numOwners] = Nft_eventsAnyType.asset_events[i].to_account.address;
 
-              //Set profile Pic
-              ownerImage[numOwners] = Nft_eventsAnyType.asset_events[i].to_account.profile_img_url;
-
-              //Check if from Null address, then dont decrement
-              //console.log("🚀 ~ TESTING PROVIDER EVENT ADDRESS: " + Nft_eventsAnyType.asset_events[i].from_account.address);
-              //console.log("🚀 ~ TESTING PROVIDER EVENT BEFORE QUANTITY: " + ownerNumOfAssets[numOwners]);
-              if(Nft_eventsAnyType.asset_events[i].from_account.address == "0x0000000000000000000000000000000000000000") {
-                //console.log("🚀 ~ OWNER EVENT NULL ADDRESS FOUND");
+              //Increment number of assets
+              ownerNumOfAssets[numOwners] = 0;
+              let tmp : number = Nft_eventsAnyType.asset_events[i].quantity
+              if (tmp > 1) {
+                ownerNumOfAssets[numOwners] = +ownerNumOfAssets[numOwners] + +tmp;
               } else {
-                ownerNumOfAssets[numOwners] = 0;
-                let tmp : number = Nft_eventsAnyType.asset_events[i].quantity;
-                ownerNumOfAssets[numOwners] = +ownerNumOfAssets[numOwners] - +tmp;
+                ownerNumOfAssets[numOwners] = ownerNumOfAssets[numOwners] + 1;
               }
 
-              //console.log("🚀 ~ TESTING PROVIDER EVENT AFTER QUANTITY: " + ownerNumOfAssets[numOwners]);
+              //Set Profile Pic
+              ownerImage[numOwners] = Nft_eventsAnyType.asset_events[i].to_account.profile_img_url;
+              
 
               //Increment number of owners
               numOwners++;
+              
+            }
+          }      
+          
+          //Provider 
+          
+          //Check if Provider is an owner, if not add them, then decrement their ownsership by one
+          //console.log("🚀 ~ TESTING PROVIDER ADDRESS EVENT " + JSON.stringify(Nft_eventsAnyType.asset_events[i].from_account));
+          
+          //Loop through entire owner list and try to find Provider
+          let newusrProvider : boolean = true;
+          for (let x=0; x<numOwners; x++) {
+
+            if((ownerAddress[x] ===  Nft_eventsAnyType.asset_events[i].from_account.address) && (newusrProvider === true)) {
+              //This person already owns one of these, Increment ownerNumOfAssets
+              //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT DUPLICATE FOUND");
+              
+              //Check if from Null address, then dont decrement
+              //console.log("🚀 ~ TESTING PROVIDER EVENT ADDRESS: " + Nft_eventsAnyType.asset_events[i].from_account.address);
+              
+              if(Nft_eventsAnyType.asset_events[i].from_account.address == "0x0000000000000000000000000000000000000000") {
+                //console.log("🚀 ~ OWNER EVENT NULL ADDRESS FOUND");
+              } else {
+                let tmp : number = Nft_eventsAnyType.asset_events[i].quantity;
+                ownerNumOfAssets[x] = +ownerNumOfAssets[x] - +tmp;
+              }
+
+              //Set newusr to false!!
+              newusrProvider = false;
+
+            } 
+          }
+
+          //If we didnt find a previous owner then this is a new owner
+          if (newusrProvider === true) {
+            //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT NO DUPLICATE FOUND... ADDING NEW USER");
+            
+            //Adding new user or Anonymous owner
+            if ((Nft_eventsAnyType.asset_events[i].from_account.user === null) || (Nft_eventsAnyType.asset_events[i].from_account.user.username === null)) {
+              //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD USERNAME " + "Anonymous");
+              owner[numOwners] = "Anonymous"
+            } else {
+              //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD USERNAME " + Nft_eventsAnyType.asset_events[i].to_account.user.username);
+              owner[numOwners] = Nft_eventsAnyType.asset_events[i].from_account.user.username;
             }
             
-          }
+            //Adding new address owner
+            //console.log("🚀 ~ TESTING ADDITIONAL OWNERS EVENT ADD ACCOUNT " + Nft_eventsAnyType.asset_events[i].to_account.address);
+            ownerAddress[numOwners] = Nft_eventsAnyType.asset_events[i].from_account.address;
 
-          //Sory by Highest Number of assets and delete all non holders (Slow Data Sort)
-          for(let p=0; p<numOwners; p++) {
-            //Find Largest Holder, Put them first, etc.
-            let largestHolder = 0;
-            for(let r=p; r<numOwners; r++) {
-              if(ownerNumOfAssets[largestHolder] < ownerNumOfAssets[r]) {
-                largestHolder = r;
-              }
+            //Set profile Pic
+            ownerImage[numOwners] = Nft_eventsAnyType.asset_events[i].to_account.profile_img_url;
+
+            //Check if from Null address, then dont decrement
+            //console.log("🚀 ~ TESTING PROVIDER EVENT ADDRESS: " + Nft_eventsAnyType.asset_events[i].from_account.address);
+            //console.log("🚀 ~ TESTING PROVIDER EVENT BEFORE QUANTITY: " + ownerNumOfAssets[numOwners]);
+            if(Nft_eventsAnyType.asset_events[i].from_account.address == "0x0000000000000000000000000000000000000000") {
+              //console.log("🚀 ~ OWNER EVENT NULL ADDRESS FOUND");
+            } else {
+              ownerNumOfAssets[numOwners] = 0;
+              let tmp : number = Nft_eventsAnyType.asset_events[i].quantity;
+              ownerNumOfAssets[numOwners] = +ownerNumOfAssets[numOwners] - +tmp;
             }
-            //Swap Largest Holder for position p
-            let tmp_pos_1 = owner[p];
-            let tmp_pos_2 = ownerAddress[p];
-            let tmp_pos_3 = ownerNumOfAssets[p];
-            let tmp_pos_4 = ownerImage[p];
 
-            owner[p] = owner[largestHolder];
-            ownerAddress[p] = ownerAddress[largestHolder];
-            ownerNumOfAssets[p] = ownerNumOfAssets[largestHolder];
-            ownerImage[p] = ownerImage[largestHolder];
+            //console.log("🚀 ~ TESTING PROVIDER EVENT AFTER QUANTITY: " + ownerNumOfAssets[numOwners]);
 
-            owner[largestHolder] = tmp_pos_1;
-            ownerAddress[largestHolder] = tmp_pos_2;
-            ownerNumOfAssets[largestHolder] = tmp_pos_3;
-            ownerImage[largestHolder] = tmp_pos_4;
-
+            //Increment number of owners
+            numOwners++;
           }
-
-          //Delete all 0, and undefined values and shift array up
-          for(let w=0; w<numOwners; w++) {
-            if((ownerNumOfAssets[w] == undefined) ||(ownerNumOfAssets[w] == 0)) {
-              //Shift all values up
-              for(let z=w; z<numOwners; z++) {
-                owner[z] = owner[z+1];
-                ownerAddress[z] = ownerAddress[z+1];
-                ownerNumOfAssets[z] = ownerNumOfAssets[z+1];
-                ownerImage[z] = ownerImage[z+1];
-              }
-            }
-          }
-
-          //Remove trailing 0s and undefined stuff
-          while((ownerNumOfAssets[owner.length-1] == 0) || (ownerNumOfAssets[owner.length-1] == undefined))
-          {
-            owner.pop();
-            ownerAddress.pop();
-            ownerNumOfAssets.pop();
-            ownerImage.pop();
-            numOwners--;
-          }
-
-          //Set States
-          setNft_owner_names(owner);
-          setNft_owner_address(ownerAddress);
-          setNft_owner_numAssets(ownerNumOfAssets);
-          setNft_num_owner(numOwners);
-          setNft_owner_image(ownerImage);
-
-          //Try to set price here
-          try {
-            let price : any = JSON.stringify(NftAnyType.assets[0].sell_orders[0].current_price/(1000000000000000000));
-            setNft_price(price);
-          } catch(e) {
-            console.log( "🚀 ~ " + e)
-          }
-
-          //Debug Owners
-          
-          //console.log("🚀 ~ TESTING FINAL OWNERS EVENT USERNAMES ");
-          //console.log("🚀 ~ TESTING FINAL OWNERS EVENT ACCOUNTS ");
-          //console.log("🚀 ~ TESTING FINAL OWNERS EVENT NUMBER OF OWNED ASSETS ");
-          //console.log("🚀 ~ TESTING FINAL OWNERS EVENT PROFILE IMAGE ");
-          //for(let z=0; z<numOwners; z++) {
-            //console.log("🚀 ~ " + owner[z]);
-            //console.log("🚀 ~ " + ownerAddress[z]);
-            //console.log("🚀 ~ " + ownerNumOfAssets[z]);
-            //console.log("🚀 ~ " + ownerImage[z]);
-          //}
           
         }
-      }
 
-    },[props, Nft])
+        //Sory by Highest Number of assets and delete all non holders (Slow Data Sort)
+        for(let p=0; p<numOwners; p++) {
+          //Find Largest Holder, Put them first, etc.
+          let largestHolder = 0;
+          for(let r=p; r<numOwners; r++) {
+            if(ownerNumOfAssets[largestHolder] < ownerNumOfAssets[r]) {
+              largestHolder = r;
+            }
+          }
+          //Swap Largest Holder for position p
+          let tmp_pos_1 = owner[p];
+          let tmp_pos_2 = ownerAddress[p];
+          let tmp_pos_3 = ownerNumOfAssets[p];
+          let tmp_pos_4 = ownerImage[p];
 
+          owner[p] = owner[largestHolder];
+          ownerAddress[p] = ownerAddress[largestHolder];
+          ownerNumOfAssets[p] = ownerNumOfAssets[largestHolder];
+          ownerImage[p] = ownerImage[largestHolder];
+
+          owner[largestHolder] = tmp_pos_1;
+          ownerAddress[largestHolder] = tmp_pos_2;
+          ownerNumOfAssets[largestHolder] = tmp_pos_3;
+          ownerImage[largestHolder] = tmp_pos_4;
+
+        }
+
+        //Delete all 0, and undefined values and shift array up
+        for(let w=0; w<numOwners; w++) {
+          if((ownerNumOfAssets[w] == undefined) ||(ownerNumOfAssets[w] == 0)) {
+            //Shift all values up
+            for(let z=w; z<numOwners; z++) {
+              owner[z] = owner[z+1];
+              ownerAddress[z] = ownerAddress[z+1];
+              ownerNumOfAssets[z] = ownerNumOfAssets[z+1];
+              ownerImage[z] = ownerImage[z+1];
+            }
+          }
+        }
+
+        //Remove trailing 0s and undefined stuff
+        while((ownerNumOfAssets[owner.length-1] == 0) || (ownerNumOfAssets[owner.length-1] == undefined))
+        {
+          owner.pop();
+          ownerAddress.pop();
+          ownerNumOfAssets.pop();
+          ownerImage.pop();
+          numOwners--;
+        }
+
+        //Set States
+        setNft_owner_names(owner);
+        setNft_owner_address(ownerAddress);
+        setNft_owner_numAssets(ownerNumOfAssets);
+        setNft_num_owner(numOwners);
+        setNft_owner_image(ownerImage);
+
+        price = NftAnyType.sell_orders[0].current_price/(1000000000000000000);
+        setNftPrice(price);
+        //console.log("🚀 ~ PRICE: ", price);
+        if (price == 0) {
+          console.log("🚀 ~ This Nft is not for sale");
+        }
+        
+        //Debug Owners
+        /*
+        console.log("🚀 ~ TESTING FINAL OWNERS EVENT USERNAMES ");
+        console.log("🚀 ~ TESTING FINAL OWNERS EVENT ACCOUNTS ");
+        console.log("🚀 ~ TESTING FINAL OWNERS EVENT NUMBER OF OWNED ASSETS ");
+        console.log("🚀 ~ TESTING FINAL OWNERS EVENT PROFILE IMAGE ");
+        for(let z=0; z<numOwners; z++) {
+          console.log("🚀 ~ " + owner[z]);
+          console.log("🚀 ~ " + ownerAddress[z]);
+          console.log("🚀 ~ " + ownerNumOfAssets[z]);
+          console.log("🚀 ~ " + ownerImage[z]);
+        }
+        */
+
+        setName(NftAnyType.name);
+        setDescription(NftAnyType.description);
+        setImage(NftAnyType.image_url);
+        setThumbnail(NftAnyType.image_preview_url);
+        setCollectionName(NftAnyType.collection.name);
+        setCollectionDescription(NftAnyType.collection.description);
+        setContract(NftAnyType.asset_contract.address);
+        setToken(NftAnyType.token_id);
+        SetCreator(NftAnyType.creator.user.username);
+        SetCreatorImage(NftAnyType.creator.profile_img_url);
+        setExternalLink(NftAnyType.external_link);
+        setNumSales(NftAnyType.num_sales);
+        setNftLoaded("Done");
+      } 
+    }
 
     /**
      *  CHECKOUT MODAL
@@ -739,8 +767,6 @@ export function NftConsumer ({...props}) {
 
     */
 
-      // 
-
     //Any type to allow rendering from Nft
     let OwnerArray : number[] = [];
     
@@ -770,48 +796,50 @@ export function NftConsumer ({...props}) {
     return (
   
         <div className={props.className}>
-
-          {((props.name) && (!(NftAnyType === ""))) && <> {JSON.stringify(NftAnyType.assets[0].name).replace(/['"]+/g, '')} </> }
-        
-          {((props.buy) && (!(NftAnyType === ""))) && <> <Order {...props}/> </> }
-        
-          {((props.creator) && (!(NftAnyType === ""))) && <> {JSON.stringify(NftAnyType.assets[0].creator.user.username).replace(/['"]+/g, '')} </> }
-
-          {((props.creatorImage) && (!(NftAnyType === ""))) && <img style={props.ImageStyle} src={NftAnyType.assets[0].creator.profile_img_url} />  }
-        
-          {((props.numberOfSales) && (!(NftAnyType === ""))) && <> {JSON.stringify(NftAnyType.assets[0].num_sales).replace(/['"]+/g, '')} </> }
-        
-          {((props.tokenId) && (!(NftAnyType === ""))) && <> {JSON.stringify(NftAnyType.assets[0].token_id).replace(/['"]+/g, '')} </> }
-        
-          {((props.contract) && (!(NftAnyType === ""))) && <> {JSON.stringify(NftAnyType.assets[0].asset_contract.address).replace(/['"]+/g, '')} </> }
-        
-          {((props.description) && (!(NftAnyType === ""))) && <div style={{whiteSpace: "pre-wrap"}}> {JSON.stringify(NftAnyType.assets[0].description).replace(/['"]+/g, '').replace("\\n\\n", " \n ").replace("\\n", " \n ")} </div> }
-        
-          {((props.collectionName) && (!(NftAnyType === ""))) && <> {JSON.stringify(NftAnyType.assets[0].collection.name).replace(/['"]+/g, '')} </> }
-        
-          {((props.collectionDescription) && (!(NftAnyType === ""))) && <div style={{whiteSpace: "pre-wrap"}}> {JSON.stringify(NftAnyType.assets[0].collection.description).replace(/['"]+/g, '').replace("\\n\\n", " \n ").replace("\\n", " \n ")} </div> }
-        
-          {((props.thumbnail) && (!(NftAnyType === ""))) && 
-            <img src={JSON.stringify(NftAnyType.assets[0].image_thumbnail_url).replace(/['"]+/g, '')} style={{objectFit:props.fit}} width="100%" height="100%" ></img> 
-          }
-        
-          {((props.image) && (!(NftAnyType === ""))) && 
-            <img src={JSON.stringify(NftAnyType.assets[0].image_url).replace(/['"]+/g, '')} style={{objectFit:props.fit}} width="100%" height="100%" ></img> 
-          }
-        
-          {((props.externalLink) && (!(NftAnyType === ""))) && 
-            <a href={JSON.stringify(NftAnyType.assets[0].external_link).replace(/['"]+/g, '')} > {props.children} </a> 
-          }
-          
-          {((props.owner)  && (!(NftAnyType === ""))) && <> {OwnerList} </> }
-
-          {(((props.price) && (!(NftAnyType === "")))) && 
+          {(NftLoaded == "Done") &&
             <>
-            {(Nft_price === 0) && <div>Not Available</div> }
-            {(!(Nft_price === 0)) && <> {Nft_price} </> } 
+              {((props.name) && (!(NftAnyType === ""))) && <> {name} </> }
+            
+              {((props.buy) && (!(NftAnyType === ""))) && <> <Order {...props}/> </> }
+            
+              {((props.creator) && (!(NftAnyType === ""))) && <> {creator} </> }
+
+              {((props.creatorImage) && (!(NftAnyType === ""))) && <img style={props.ImageStyle} src={creatorImage} />  }
+            
+              {((props.numberOfSales) && (!(NftAnyType === ""))) && <> {numSales} </> }
+            
+              {((props.tokenId) && (!(NftAnyType === ""))) && <> {token} </> }
+            
+              {((props.contract) && (!(NftAnyType === ""))) && <> {contract} </> }
+            
+              {((props.description) && (!(NftAnyType === ""))) && <div style={{whiteSpace: "pre-wrap"}}> {description} </div> }
+            
+              {((props.collectionName) && (!(NftAnyType === ""))) && <> {collectionName} </> }
+            
+              {((props.collectionDescription) && (!(NftAnyType === ""))) && <div style={{whiteSpace: "pre-wrap"}}> {collectionDescription} </div> }
+            
+              {((props.thumbnail) && (!(NftAnyType === ""))) && 
+                <img src={thumbnail} style={{objectFit:props.fit}} width="100%" height="100%" ></img> 
+              }
+            
+              {((props.image) && (!(NftAnyType === ""))) && 
+                <img src={image} style={{objectFit:props.fit}} width="100%" height="100%" ></img> 
+              }
+            
+              {((props.externalLink) && (!(NftAnyType === ""))) && 
+                <a href={externalLink} > {props.children} </a> 
+              }
+              
+              {((props.owner)  && (!(NftAnyType === ""))) && <> {OwnerList} </> }
+
+              {(((props.price) && (!(NftAnyType === "")))) && 
+                <>
+                {(Nftprice == 0) && <div>Not Available</div> }
+                {(Nftprice != 0) && <> {Nftprice} </> } 
+                </>
+              }
             </>
           }
-          
         </div>
     );
   }
