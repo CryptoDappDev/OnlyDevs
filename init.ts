@@ -52,7 +52,7 @@ import { NftName } from "./components/web3/NftName"
 import { LottieContainer } from "./components/lottie/LottieContainer";
 
 // <-- ONLYMEMES.COM PROJECT ID + API TOKEN -->
-/*
+
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -62,10 +62,10 @@ export const PLASMIC = initPlasmicLoader({
   ],
   preview: false,
 });
-*/
+
 
 // <-- TEST BENCH PROJECT ID + API TOKEN -->
-
+/*
 export const PLASMIC = initPlasmicLoader({
   projects: [
     {
@@ -76,7 +76,7 @@ export const PLASMIC = initPlasmicLoader({
   ],
   preview: true,
 });
-
+*/
 
 //Lottie
 PLASMIC.registerComponent(LottieContainer, {
