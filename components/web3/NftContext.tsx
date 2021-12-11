@@ -274,11 +274,13 @@ export function NftContext({...props}) {
   
 
   return (
-    <NftContextProvider.Provider value={value}>
-      <NftEventsContextProvider.Provider value={value_events}>
-      {props.children}
-      </NftEventsContextProvider.Provider>
-    </NftContextProvider.Provider>
+    <div className={props.className}>
+      <NftContextProvider.Provider value={value}>
+        <NftEventsContextProvider.Provider value={value_events}>
+        {props.children}
+        </NftEventsContextProvider.Provider>
+      </NftContextProvider.Provider>
+    </div>
   )
 }
 

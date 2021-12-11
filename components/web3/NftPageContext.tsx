@@ -128,10 +128,6 @@ export function NftPageContext ({...props}) {
 
 	//Call Updater Function for getting Nfts
 	useEffect (() => {
-
-		//Identity Check (Beta Tester Card only for now) -> To be Replaced by a DB call
-		getNFT("18776689953573188178236043411178001783167154030768354233039085512119153590322",
-		"0x495f947276749Ce646f68AC8c248420045cb7b5e");
 		
 		setTimeout(() => {
 			
@@ -141,8 +137,6 @@ export function NftPageContext ({...props}) {
 				console.log("🚀 ~ NFT Locations: ", props.locations);
 				getNfts(0);
 			};
-			
-			
 
 		},500)
 	},[]);
@@ -150,7 +144,7 @@ export function NftPageContext ({...props}) {
 	//Update Profile NFTs connected to page
 	useEffect (() => {
 
-		getProfileNFTs();
+		//getProfileNFTs();
 	},[account])
 
 	/**
